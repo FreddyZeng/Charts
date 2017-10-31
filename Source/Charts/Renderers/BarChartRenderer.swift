@@ -21,6 +21,8 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
     fileprivate class Buffer
     {
         var rects = [CGRect]()
+        var stackBarTopRectsIndex = [Int]()
+        var stackBarBottomRectsIndex = [Int]()
     }
     
     @objc open weak var dataProvider: BarChartDataProvider?
@@ -87,6 +89,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         var barRect = CGRect()
         var x: Double
         var y: Double
+        
+        buffer.stackBarTopRectsIndex.removeAll()
+        buffer.stackBarBottomRectsIndex.removeAll()
         
         for i in stride(from: 0, to: min(Int(ceil(Double(dataSet.entryCount) * animator.phaseX)), dataSet.entryCount), by: 1)
         {
@@ -175,6 +180,19 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                     barRect.size.height = bottom - top
                     
                     buffer.rects[bufferIndex] = barRect
+                    if k == 0 {
+                        if !isInverted {
+                            buffer.stackBarBottomRectsIndex.append(bufferIndex)
+                        } else {
+                            buffer.stackBarTopRectsIndex.append(bufferIndex)
+                        }
+                    }else if k == vals!.count - 1 {
+                        if !isInverted {
+                            buffer.stackBarTopRectsIndex.append(bufferIndex)
+                        } else {
+                            buffer.stackBarBottomRectsIndex.append(bufferIndex)
+                        }
+                    }
                     bufferIndex += 1
                 }
             }
@@ -239,7 +257,6 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             for i in stride(from: 0, to: min(Int(ceil(Double(dataSet.entryCount) * animator.phaseX)), dataSet.entryCount), by: 1)
             {
                 guard let e = dataSet.entryForIndex(i) as? BarChartDataEntry else { continue }
-                
                 x = e.x
                 
                 _barShadowRectBuffer.origin.x = CGFloat(x - barWidthHalf)
@@ -261,7 +278,16 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 _barShadowRectBuffer.size.height = viewPortHandler.contentHeight
                 
                 context.setFillColor(dataSet.barShadowColor.cgColor)
-                context.fill(_barShadowRectBuffer)
+                
+                if dataSet.barShadowType == .topCorner {
+                    let path = UIBezierPath.init(roundedRect: _barShadowRectBuffer, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: _barShadowRectBuffer.size.width / 2.0, height: _barShadowRectBuffer.size.width / 2.0))
+                    path.fill()
+                }else if dataSet.barShadowType == .bottomCorner {
+                    let path = UIBezierPath.init(roundedRect: _barShadowRectBuffer, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: _barShadowRectBuffer.size.width / 2.0, height: _barShadowRectBuffer.size.width / 2.0))
+                    path.fill()
+                }else {
+                    context.fill(_barShadowRectBuffer)
+                }
             }
         }
         
@@ -285,7 +311,18 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 }
                 
                 context.setFillColor(dataSet.barShadowColor.cgColor)
-                context.fill(barRect)
+                if dataSet.barCornerType == .allCornet {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }else if buffer.stackBarTopRectsIndex.contains(j), dataSet.barCornerType == .topCorner {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }else if buffer.stackBarBottomRectsIndex.contains(j), dataSet.barCornerType == .bottomCorner {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }else {
+                    context.fill(barRect)
+                }
             }
         }
         
@@ -316,13 +353,34 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
             
-            context.fill(barRect)
+            if dataSet.barCornerType == .allCornet {
+                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                path.fill()
+            }else if buffer.stackBarTopRectsIndex.contains(j), dataSet.barCornerType == .topCorner {
+                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                path.fill()
+            }else if buffer.stackBarBottomRectsIndex.contains(j), dataSet.barCornerType == .bottomCorner {
+                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                path.fill()
+            }else {
+                context.fill(barRect)
+            }
+            
             
             if drawBorder
             {
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
-                context.stroke(barRect)
+                
+                if buffer.stackBarTopRectsIndex.contains(j) {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.stroke()
+                }else if buffer.stackBarBottomRectsIndex.contains(j) {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.stroke()
+                }else {
+                    context.stroke(barRect)
+                }
             }
         }
         
@@ -685,7 +743,30 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 
                 setHighlightDrawPos(highlight: high, barRect: barRect)
                 
-                context.fill(barRect)
+                let isInverted = dataProvider.isInverted(axis: set.axisDependency)
+                
+                if set.barCornerType == .allCornet {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }else if high.stackIndex == 0, set.barCornerType == .topCorner {
+                    if !isInverted {
+                        let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                        path.fill()
+                    } else {
+                        let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                        path.fill()
+                    }
+                }else if high.stackIndex == set.stackSize - 1,set.barCornerType == .bottomCorner {
+                    if !isInverted {
+                        let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                        path.fill()
+                    } else {
+                        let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                        path.fill()
+                    }
+                }else {
+                    context.fill(barRect)
+                }
             }
         }
         
