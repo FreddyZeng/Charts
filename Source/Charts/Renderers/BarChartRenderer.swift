@@ -23,6 +23,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         var rects = [CGRect]()
         var stackBarTopRectsIndex = [Int]()
         var stackBarBottomRectsIndex = [Int]()
+        var rectsLinearGradientColor = [[UIColor]]()
     }
     
     @objc open weak var dataProvider: BarChartDataProvider?
@@ -129,6 +130,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 barRect.size.height = bottom - top
                 
                 buffer.rects[bufferIndex] = barRect
+                buffer.rectsLinearGradientColor.append(e.linearGradientColor)
                 bufferIndex += 1
             }
             else
@@ -193,6 +195,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                             buffer.stackBarBottomRectsIndex.append(bufferIndex)
                         }
                     }
+                    buffer.rectsLinearGradientColor.append(e.linearGradientColor)
                     bufferIndex += 1
                 }
             }
@@ -220,6 +223,43 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 drawDataSet(context: context, dataSet: set as! IBarChartDataSet, index: i)
             }
         }
+    }
+    
+    fileprivate func drawLinearGradientColor(context: CGContext, rect: CGRect, rectCorner: UIRectCorner?, colors: [UIColor]) {
+        context.saveGState()
+        
+        var path = UIBezierPath.init(rect: rect)
+        if let rectCorner = rectCorner {
+            path = UIBezierPath.init(roundedRect: rect, byRoundingCorners: rectCorner, cornerRadii: CGSize(width: rect.size.width / 2.0, height: rect.size.width / 2.0))
+        }
+        
+        let contentRect = path.cgPath.boundingBox
+        context.addPath(path.cgPath)
+        context.clip()
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        var colorComponents = [CGFloat]()
+        for color in colors {
+            let colorComponent = color.cgColor.components
+            colorComponents.append(colorComponent![0])
+            colorComponents.append(colorComponent![1])
+            colorComponents.append(colorComponent![2])
+            colorComponents.append(colorComponent![3])
+        }
+        
+        var locations:[CGFloat] = [0.0, 1.0]
+        
+        let gradient = CGGradient(colorSpace: colorSpace, colorComponents: &colorComponents, locations: &locations, count: colors.count)
+        
+        let startPoint = CGPoint(x: contentRect.minX , y: contentRect.minY
+        )
+        
+        let endPoint = CGPoint(x: contentRect.minX, y: contentRect.maxY)
+        
+        context.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: CGGradientDrawingOptions.drawsBeforeStartLocation)
+        
+        context.restoreGState()
     }
     
     fileprivate var _barShadowRectBuffer: CGRect = CGRect()
@@ -356,18 +396,34 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 }
                 context.setFillColor(color.cgColor)
             }
-            
+           
             if dataSet.barCornerType == .allCornet {
-                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
-                path.fill()
+                if buffer.rectsLinearGradientColor[j].count > 1 {
+                    drawLinearGradientColor(context: context, rect: barRect, rectCorner: .allCorners, colors:buffer.rectsLinearGradientColor[j] )
+                }else {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }
             }else if buffer.stackBarTopRectsIndex.contains(j), dataSet.barCornerType == .topCorner {
-                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
-                path.fill()
+                if buffer.rectsLinearGradientColor.count > 1 {
+                    drawLinearGradientColor(context: context, rect: barRect, rectCorner: [.topLeft, .topRight], colors: [UIColor.red, UIColor.blue])
+                }else {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.topLeft, .topRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }
             }else if buffer.stackBarBottomRectsIndex.contains(j), dataSet.barCornerType == .bottomCorner {
-                let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
-                path.fill()
+                if buffer.rectsLinearGradientColor.count > 1 {
+                    drawLinearGradientColor(context: context, rect: barRect, rectCorner: [.bottomLeft, .bottomRight], colors: [UIColor.red, UIColor.blue])
+                }else {
+                    let path = UIBezierPath.init(roundedRect: barRect, byRoundingCorners: [.bottomLeft, .bottomRight] , cornerRadii: CGSize(width: barRect.size.width / 2.0, height: barRect.size.width / 2.0))
+                    path.fill()
+                }
             }else {
-                context.fill(barRect)
+                if buffer.rectsLinearGradientColor.count > 1 {
+                    drawLinearGradientColor(context: context, rect: barRect, rectCorner: [.bottomLeft, .bottomRight], colors: [UIColor.red, UIColor.blue])
+                }else {
+                    context.fill(barRect)
+                }
             }
             
             
