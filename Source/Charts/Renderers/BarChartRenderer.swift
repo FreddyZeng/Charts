@@ -350,7 +350,11 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             if !isSingleColor
             {
                 // Set the color for the currently drawn value. If the index is out of bounds, reuse colors.
-                context.setFillColor(dataSet.color(atIndex: j).cgColor)
+                let color = dataSet.color(atIndex: j)
+                if color == UIColor.clear {
+                    continue
+                }
+                context.setFillColor(color.cgColor)
             }
             
             if dataSet.barCornerType == .allCornet {
@@ -707,6 +711,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 {
                     continue
                 }
+                
                 
                 let trans = dataProvider.getTransformer(forAxis: set.axisDependency)
                 

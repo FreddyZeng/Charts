@@ -80,6 +80,10 @@ open class BarHighlighter: ChartHighlighter
         {
             let stackIndex = getClosestStackIndex(ranges: ranges, value: yValue)
             
+            if set.colors[stackIndex] == UIColor.clear {
+                return nil;
+            }
+            
             let pixel = chart
                 .getTransformer(forAxis: set.axisDependency)
                 .pixelForValues(x: high.x, y: ranges[stackIndex].to)
