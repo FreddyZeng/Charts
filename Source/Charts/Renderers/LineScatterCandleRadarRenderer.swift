@@ -44,22 +44,27 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
             path.fill()
             path.stroke()
             
-            context.beginPath()
             
-            context.setLineWidth(1)
-            context.setLineDash(phase: 1, lengths: [2,0,2])
+            let bottomLineHeight = viewPortHandler.contentBottom - 10;
             
-            context.move(to: CGPoint(x: point.x, y: point.y - cornerRadius))
-            context.addLine(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom  - 10))
-            context.strokePath()
+            if point.y <= bottomLineHeight {
+                context.beginPath()
+                context.setLineWidth(1)
+                context.setLineDash(phase: 1, lengths: [2,0,2])
+                context.move(to: CGPoint(x: point.x, y: point.y - cornerRadius))
+                context.addLine(to: CGPoint(x: point.x, y: bottomLineHeight))
+                context.strokePath()
+            }
             
-            context.beginPath()
-            context.setLineWidth(2)
-            context.setLineDash(phase: 0, lengths: [])
-            context.move(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom  - 10))
-            context.addLine(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom))
+            if point.y <= bottomLineHeight {
+                context.beginPath()
+                context.setLineWidth(2)
+                context.setLineDash(phase: 0, lengths: [])
+                context.move(to: CGPoint(x: point.x, y: bottomLineHeight))
+                context.addLine(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom))
+                context.strokePath()
+            }
             
-            context.strokePath()
         }else if set.isVerticalHighlightIndicatorEnabled
         {
             context.beginPath()
