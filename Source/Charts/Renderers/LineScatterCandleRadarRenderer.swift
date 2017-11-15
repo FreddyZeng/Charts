@@ -51,7 +51,8 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
                 context.beginPath()
                 context.setLineWidth(1)
                 context.setLineDash(phase: 1, lengths: [2,0,2])
-                context.move(to: CGPoint(x: point.x, y: point.y - cornerRadius))
+                let pointY = point.y + 5
+                context.move(to: CGPoint(x: point.x, y: pointY))
                 context.addLine(to: CGPoint(x: point.x, y: bottomLineHeight))
                 context.strokePath()
             }
