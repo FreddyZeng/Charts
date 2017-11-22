@@ -11,6 +11,20 @@
 
 import Foundation
 import CoreGraphics
+@objc
+public enum IBarChartShadowType: Int {
+    case square
+    case topCorner
+    case bottomCorner
+}
+
+@objc
+public enum IBarChartType: Int {
+    case square
+    case topCorner
+    case bottomCorner
+    case allCornet
+}
 
 @objc
 public protocol IBarChartDataSet: IBarLineScatterCandleBubbleChartDataSet
@@ -25,8 +39,14 @@ public protocol IBarChartDataSet: IBarLineScatterCandleBubbleChartDataSet
     /// - returns: The maximum number of bars that can be stacked upon another in this DataSet.
     var stackSize: Int { get }
     
+    /// 柱状图圆角类型
+    var barCornerType: IBarChartType { get set }
+    
     /// the color used for drawing the bar-shadows. The bar shadows is a surface behind the bar that indicates the maximum value
     var barShadowColor: NSUIColor { get set }
+    
+    /// 柱状图背景是否圆角
+    var barShadowType: IBarChartShadowType { get set }
     
     /// the width used for drawing borders around the bars. If borderWidth == 0, no border will be drawn.
     var barBorderWidth : CGFloat { get set }

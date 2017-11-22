@@ -135,11 +135,17 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
     /// array of labels used to describe the different values of the stacked bars
     open var stackLabels: [String] = ["Stack"]
     
+    /// 柱状图圆角类型
+    public var barCornerType:IBarChartType = .square
+    
     // MARK: - Styling functions and accessors
     
     /// the color used for drawing the bar-shadows. The bar shadows is a surface behind the bar that indicates the maximum value
     open var barShadowColor = NSUIColor(red: 215.0/255.0, green: 215.0/255.0, blue: 215.0/255.0, alpha: 1.0)
 
+    /// 柱状图背景是否圆角
+    public var barShadowType: IBarChartShadowType = .square
+    
     /// the width used for drawing borders around the bars. If borderWidth == 0, no border will be drawn.
     open var barBorderWidth : CGFloat = 0.0
 

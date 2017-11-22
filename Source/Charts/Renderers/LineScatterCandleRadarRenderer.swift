@@ -32,7 +32,41 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
             else { return }
         
         // draw vertical highlight lines
-        if set.isVerticalHighlightIndicatorEnabled
+        
+        if let set = set as? LineChartDataSet, set.isVerticalHighlightIndicatorEnabled {
+            let cornerRadius:CGFloat = 3
+            
+            let pointRect = CGRect(x: point.x - cornerRadius , y: point.y - cornerRadius, width: cornerRadius * 2, height: cornerRadius * 2)
+            let path = UIBezierPath.init(roundedRect: pointRect, cornerRadius:cornerRadius)
+            
+            path.lineWidth = 2
+            context.setFillColor(set.highlightHollowFillColor.cgColor)
+            path.fill()
+            path.stroke()
+            
+            
+            let bottomLineHeight = viewPortHandler.contentBottom - 10;
+            
+            if point.y <= bottomLineHeight {
+                context.beginPath()
+                context.setLineWidth(1)
+                context.setLineDash(phase: 1, lengths: [2,0,2])
+                let pointY = point.y + 5
+                context.move(to: CGPoint(x: point.x, y: pointY))
+                context.addLine(to: CGPoint(x: point.x, y: bottomLineHeight))
+                context.strokePath()
+            }
+            
+            if point.y <= bottomLineHeight {
+                context.beginPath()
+                context.setLineWidth(2)
+                context.setLineDash(phase: 0, lengths: [])
+                context.move(to: CGPoint(x: point.x, y: bottomLineHeight))
+                context.addLine(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom))
+                context.strokePath()
+            }
+            
+        }else if set.isVerticalHighlightIndicatorEnabled
         {
             context.beginPath()
             context.move(to: CGPoint(x: point.x, y: viewPortHandler.contentTop))

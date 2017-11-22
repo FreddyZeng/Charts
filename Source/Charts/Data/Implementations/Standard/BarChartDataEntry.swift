@@ -30,6 +30,9 @@ open class BarChartDataEntry: ChartDataEntry
         super.init()
     }
     
+    /// 设置柱状图的线性渐变色
+    @objc public var linearGradientColors = [UIColor]()
+    
     /// Constructor for normal bars (not stacked).
     public override init(x: Double, y: Double)
     {
