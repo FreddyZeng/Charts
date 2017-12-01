@@ -354,7 +354,7 @@ open class YAxisRenderer: AxisRendererBase
             context.beginPath()
             // 绘制线下面的区域颜色，从小到大进行渲染颜色
             context.setFillColor(l.lineBottomSpaceColor.cgColor)
-            context.setStrokeColor(UIColor.clear.cgColor)
+            context.setStrokeColor(NSUIColor.clear.cgColor)
             
             context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
             context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
