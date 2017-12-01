@@ -296,6 +296,10 @@ open class YAxisRenderer: AxisRendererBase
             else { return }
         
         var limitLines = yAxis.limitLines
+        // 从小到大排序lines
+        limitLines = limitLines.sorted(by: { (left, right) -> Bool in
+            return left.limit < right.limit
+        })
         
         if limitLines.count == 0
         {
@@ -307,6 +311,7 @@ open class YAxisRenderer: AxisRendererBase
         let trans = transformer.valueToPixelMatrix
         
         var position = CGPoint(x: 0.0, y: 0.0)
+        var bottomSpacePosition = CGPoint(x: viewPortHandler.contentLeft, y: viewPortHandler.contentHeight)// 上次渲染的line位置
         
         for i in 0 ..< limitLines.count
         {
@@ -345,6 +350,19 @@ open class YAxisRenderer: AxisRendererBase
             }
             
             context.strokePath()
+            
+            context.beginPath()
+            // 绘制线下面的区域颜色，从小到大进行渲染颜色
+            context.setFillColor(l.lineBottomSpaceColor.cgColor)
+            context.setStrokeColor(UIColor.clear.cgColor)
+            
+            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: bottomSpacePosition.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentLeft, y: bottomSpacePosition.y))
+            bottomSpacePosition = CGPoint(x: position.x, y: position.y - l.lineWidth/2.0)
+            
+            context.fillPath()
             
             let label = l.label
             

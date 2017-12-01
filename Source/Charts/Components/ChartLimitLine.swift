@@ -33,6 +33,8 @@ open class ChartLimitLine: ComponentBase
     @objc open var lineColor = NSUIColor(red: 237.0/255.0, green: 91.0/255.0, blue: 91.0/255.0, alpha: 1.0)
     @objc open var lineDashPhase = CGFloat(0.0)
     @objc open var lineDashLengths: [CGFloat]?
+    /// 线下面的颜色
+    @objc open var lineBottomSpaceColor = NSUIColor.black
     
     @objc open var valueTextColor = NSUIColor.black
     @objc open var valueFont = NSUIFont.systemFont(ofSize: 13.0)
