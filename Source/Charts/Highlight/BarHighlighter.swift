@@ -80,7 +80,7 @@ open class BarHighlighter: ChartHighlighter
         {
             let stackIndex = getClosestStackIndex(ranges: ranges, value: yValue)
             
-            if set.colors[stackIndex] == UIColor.clear {
+            if set.colors[stackIndex] == NSUIColor.clear {
                 return nil;
             }
             

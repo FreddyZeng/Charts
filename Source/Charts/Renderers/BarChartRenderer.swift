@@ -23,7 +23,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         var rects = [CGRect]()
         var stackBarTopRectsIndex = [Int]()
         var stackBarBottomRectsIndex = [Int]()
-        var rectsLinearGradientColors = [[UIColor]]()
+        var rectsLinearGradientColors = [[NSUIColor]]()
     }
     
     @objc open weak var dataProvider: BarChartDataProvider?
@@ -226,7 +226,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         }
     }
     
-    fileprivate func drawLinearGradientColor(context: CGContext, rect: CGRect, rectCorner: UIRectCorner?, colors: [UIColor]) {
+    fileprivate func drawLinearGradientColor(context: CGContext, rect: CGRect, rectCorner: UIRectCorner?, colors: [NSUIColor]) {
         context.saveGState()
         
         var path = UIBezierPath.init(rect: rect)
@@ -392,7 +392,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             {
                 // Set the color for the currently drawn value. If the index is out of bounds, reuse colors.
                 let color = dataSet.color(atIndex: j)
-                if color == UIColor.clear {
+                if color == NSUIColor.clear {
                     continue
                 }
                 context.setFillColor(color.cgColor)

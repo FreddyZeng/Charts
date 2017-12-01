@@ -51,7 +51,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     /// **default**: Linear
     open var mode: Mode = Mode.linear
     
-    @objc open var highlightHollowFillColor: UIColor = UIColor.clear
+    @objc open var highlightHollowFillColor: NSUIColor = NSUIColor.clear
     
     fileprivate var _cubicIntensity = CGFloat(0.2)
     
