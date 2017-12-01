@@ -12,7 +12,7 @@
 import Foundation
 import CoreGraphics
 
-
+@objc
 open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
 {
     @objc(LineChartMode)
@@ -51,7 +51,8 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     /// **default**: Linear
     open var mode: Mode = Mode.linear
     
-    @objc open var highlightHollowFillColor: UIColor = UIColor.clear
+    // 当选中时填充颜色
+    @objc public var highlightHollowFillColor: NSUIColor = NSUIColor.clear
     
     fileprivate var _cubicIntensity = CGFloat(0.2)
     
