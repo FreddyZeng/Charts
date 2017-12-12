@@ -21,6 +21,9 @@ open class LineChartRenderer: LineRadarRenderer
 {
     @objc open weak var dataProvider: LineChartDataProvider?
     
+    /// 当前高亮属性
+    var curHighlights :[Highlight]?
+    
     @objc public init(dataProvider: LineChartDataProvider, animator: Animator, viewPortHandler: ViewPortHandler)
     {
         super.init(animator: animator, viewPortHandler: viewPortHandler)
@@ -634,7 +637,7 @@ open class LineChartRenderer: LineRadarRenderer
             for j in stride(from: _xBounds.min, through: _xBounds.range + _xBounds.min, by: 1)
             {
                 guard let e = dataSet.entryForIndex(j) else { break }
-
+                
                 pt.x = CGFloat(e.x)
                 pt.y = CGFloat(e.y * phaseY)
                 pt = pt.applying(valueToPixelMatrix)
@@ -659,6 +662,19 @@ open class LineChartRenderer: LineRadarRenderer
                 
                 if drawTransparentCircleHole
                 {
+                    if let curHighlights = curHighlights {
+                        for high in curHighlights {
+                            if let set = lineData.getDataSetByIndex(high.dataSetIndex) as? LineChartDataSet
+                                , set.isHighlightEnabled {
+                                
+                                if let hightE = set.entryForXValue(high.x, closestToY: high.y), isInBoundsX(entry: hightE, dataSet: set) {
+                                    if hightE.isEqual(e) { context.setFillColor(set.highlightHollowFillColor.cgColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     // Begin path for circle with hole
                     context.beginPath()
                     context.addEllipse(in: rect)
@@ -680,7 +696,20 @@ open class LineChartRenderer: LineRadarRenderer
                     if drawCircleHole
                     {
                         context.setFillColor(dataSet.circleHoleColor!.cgColor)
-                     
+                        
+                        if let curHighlights = curHighlights {
+                            for high in curHighlights {
+                                if let set = lineData.getDataSetByIndex(high.dataSetIndex) as? LineChartDataSet
+                                    , set.isHighlightEnabled {
+                                    
+                                    if let hightE = set.entryForXValue(high.x, closestToY: high.y), isInBoundsX(entry: hightE, dataSet: set) {
+                                        if hightE.isEqual(e) { context.setFillColor(set.highlightHollowFillColor.cgColor)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
                         // The hole rect
                         rect.origin.x = pt.x - circleHoleRadius
                         rect.origin.y = pt.y - circleHoleRadius
@@ -702,6 +731,7 @@ open class LineChartRenderer: LineRadarRenderer
             let dataProvider = dataProvider,
             let lineData = dataProvider.lineData
             else { return }
+        curHighlights = indices
         
         let chartXMax = dataProvider.chartXMax
         
