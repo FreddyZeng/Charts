@@ -29,8 +29,7 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
     {
         
         // draw vertical highlight lines
-        
-        if let set = set as? LineChartDataSet, set.isVerticalHighlightIndicatorEnabled {
+        if let set = set as? LineChartDataSet, set.drawVerticalBottomHalfHighlightIndicatorEnabled {
             let cornerRadius:CGFloat = 3
             
             let pointRect = CGRect(x: point.x - cornerRadius , y: point.y - cornerRadius, width: cornerRadius * 2, height: cornerRadius * 2)
