@@ -226,6 +226,8 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         if (valuesToHighlight())
         {
             renderer.drawHighlighted(context: context, indices: _indicesToHighlight)
+        }else {
+            renderer.drawHighlighted(context: context, indices: [])
         }
         
         context.restoreGState()

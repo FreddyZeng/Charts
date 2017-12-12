@@ -662,19 +662,6 @@ open class LineChartRenderer: LineRadarRenderer
                 
                 if drawTransparentCircleHole
                 {
-                    if let curHighlights = curHighlights {
-                        for high in curHighlights {
-                            if let set = lineData.getDataSetByIndex(high.dataSetIndex) as? LineChartDataSet
-                                , set.isHighlightEnabled {
-                                
-                                if let hightE = set.entryForXValue(high.x, closestToY: high.y), isInBoundsX(entry: hightE, dataSet: set) {
-                                    if hightE.isEqual(e) { context.setFillColor(set.highlightHollowFillColor.cgColor)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
                     // Begin path for circle with hole
                     context.beginPath()
                     context.addEllipse(in: rect)

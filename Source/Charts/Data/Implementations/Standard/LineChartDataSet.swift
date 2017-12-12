@@ -51,7 +51,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     /// **default**: Linear
     open var mode: Mode = Mode.linear
     
-    // 当选中时填充颜色, drawVerticalBottomHalfHighlightIndicatorEnabled 生效时使用
+    // 当选中时填充颜色,circleHoleColor != [UIColor clearColor]生效
     @objc open var highlightHollowFillColor: NSUIColor = NSUIColor.clear
     /// 是否显示点到底部的下半部分虚线(最底部有一小段实线)，开启后 drawVerticalHighlightIndicatorEnabled 失效
     @objc open var drawVerticalBottomHalfHighlightIndicatorEnabled = false
