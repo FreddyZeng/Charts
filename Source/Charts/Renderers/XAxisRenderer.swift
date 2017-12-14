@@ -227,7 +227,7 @@ open class XAxisRenderer: AxisRendererBase
                         let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
                         
                         if width > viewPortHandler.offsetRight * 2.0
-                            && position.x + width > viewPortHandler.chartWidth
+                            || position.x + width > viewPortHandler.chartWidth
                         {
                             position.x -= width / 2.0
                         }
