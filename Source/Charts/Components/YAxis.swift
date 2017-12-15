@@ -47,6 +47,11 @@ open class YAxis: AxisBase
     /// flag that indicates if the axis is inverted or not
     @objc open var inverted = false
     
+    /// axis  Y轴水平线，左边长线
+    @objc open var lineFirstSpace: CGFloat = 0.0;
+    /// axis  Y轴水平线，右边长线
+    @objc open var lineLastSpace: CGFloat = 0.0;
+    
     /// flag that indicates if the zero-line should be drawn regardless of other grid lines
     @objc open var drawZeroLineEnabled = false
     
