@@ -157,6 +157,9 @@ open class YAxisRenderer: AxisRendererBase
             yAxis = self.axis as? YAxis
             else { return }
         
+        let leftSpace: CGFloat = yAxis.lineFirstSpace
+        let rightSpace: CGFloat = yAxis.lineLastSpace
+        
         if !yAxis.isEnabled
         {
             return
@@ -199,12 +202,30 @@ open class YAxisRenderer: AxisRendererBase
         }
     }
     
+    @objc open var lineFirstSpace : CGFloat {
+        guard let
+            yAxis = self.axis as? YAxis
+            else { return 0.0 }
+        return yAxis.lineFirstSpace
+    }
+    
+    @objc open var lineLastSpace : CGFloat {
+        guard let
+            yAxis = self.axis as? YAxis
+            else { return 0.0 }
+        return yAxis.lineLastSpace
+    }
+    
     @objc open var gridClippingRect: CGRect
     {
         var contentRect = viewPortHandler.contentRect
         let dy = self.axis?.gridLineWidth ?? 0.0
+        let leftSpace: CGFloat = lineFirstSpace
+        let rightSpace: CGFloat = lineLastSpace
         contentRect.origin.y -= dy / 2.0
         contentRect.size.height += dy
+        contentRect.origin.x -= leftSpace
+        contentRect.size.width += (leftSpace + rightSpace)
         return contentRect
     }
     
@@ -213,8 +234,8 @@ open class YAxisRenderer: AxisRendererBase
         position: CGPoint)
     {
         context.beginPath()
-        context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
-        context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
+        context.move(to: CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: position.y))
+        context.addLine(to: CGPoint(x: viewPortHandler.contentRight + lineFirstSpace + lineLastSpace, y: position.y))
         context.strokePath()
     }
     
@@ -271,8 +292,8 @@ open class YAxisRenderer: AxisRendererBase
             context.setLineDash(phase: 0.0, lengths: [])
         }
         
-        context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: pos.y))
-        context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: pos.y))
+        context.move(to: CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: pos.y))
+        context.addLine(to: CGPoint(x: viewPortHandler.contentRight + lineFirstSpace + lineLastSpace, y: pos.y))
         context.drawPath(using: CGPathDrawingMode.stroke)
     }
     
@@ -299,7 +320,7 @@ open class YAxisRenderer: AxisRendererBase
         let trans = transformer.valueToPixelMatrix
         
         var position = CGPoint(x: 0.0, y: 0.0)
-        var bottomSpacePosition = CGPoint(x: viewPortHandler.contentLeft, y: viewPortHandler.contentHeight)// 上次渲染的line位置
+        var bottomSpacePosition = CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: viewPortHandler.contentHeight)// 上次渲染的line位置
         
         for i in 0 ..< limitLines.count
         {
@@ -323,8 +344,8 @@ open class YAxisRenderer: AxisRendererBase
             position = position.applying(trans)
             
             context.beginPath()
-            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
+            context.move(to: CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: position.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentRight + lineFirstSpace + lineLastSpace, y: position.y))
             
             context.setStrokeColor(l.lineColor.cgColor)
             context.setLineWidth(l.lineWidth)
@@ -344,10 +365,10 @@ open class YAxisRenderer: AxisRendererBase
             context.setFillColor(l.lineBottomSpaceColor.cgColor)
             context.setStrokeColor(NSUIColor.clear.cgColor)
             
-            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: bottomSpacePosition.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentLeft, y: bottomSpacePosition.y))
+            context.move(to: CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: position.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentRight + lineLastSpace + lineFirstSpace, y: position.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentRight + lineLastSpace + lineFirstSpace, y: bottomSpacePosition.y))
+            context.addLine(to: CGPoint(x: viewPortHandler.contentLeft - lineFirstSpace, y: bottomSpacePosition.y))
             bottomSpacePosition = CGPoint(x: position.x, y: position.y - l.lineWidth/2.0)
             
             context.fillPath()
