@@ -10,7 +10,6 @@
 //
 
 import Foundation
-import Charts
 
 open class RadarMarkerView: MarkerView
 {
