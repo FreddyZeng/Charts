@@ -14,7 +14,7 @@
 
 #define ITEM_COUNT 12
 
-@interface CombinedChartViewController () <ChartViewDelegate, IChartAxisValueFormatter,TYMarkerViewDelegate>
+@interface CombinedChartViewController () <ChartViewDelegate, IChartAxisValueFormatter>
 {
     NSArray<NSString *> *months;
 }
@@ -84,17 +84,7 @@
     xAxis.granularity = 1.0;
     xAxis.valueFormatter = self;
     
-    TYMarkerView *marker = [[TYMarkerView alloc] initWithColor:[UIColor blueColor] font:[UIFont systemFontOfSize:14] textColor:[UIColor redColor] insets:UIEdgeInsetsMake(15, 4, 10, 4)];
-    marker.delegate = self;
-    marker.chartView = _chartView;
-    _chartView.marker = marker;
-    
     [self updateChartData];
-}
-
-- (NSAttributedString *)tyMarkerViewRefreshContentAttStringWithMark:(TYMarkerView *)mark entry:(ChartDataEntry *)entry highlight:(ChartHighlight *)highlight {
-    NSMutableAttributedString *attString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%li",(long)entry.y]];
-    return attString;
 }
 
 - (void)didReceiveMemoryWarning
