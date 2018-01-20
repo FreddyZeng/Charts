@@ -13,7 +13,6 @@
 //
 
 import Foundation
-import Charts
 
 
 @objc protocol TYMarkerViewDelegate {
