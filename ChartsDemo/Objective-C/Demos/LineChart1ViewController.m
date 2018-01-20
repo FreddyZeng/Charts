@@ -74,14 +74,12 @@
     ll1.lineDashLengths = @[@5.f, @5.f];
     ll1.labelPosition = ChartLimitLabelPositionRightTop;
     ll1.valueFont = [UIFont systemFontOfSize:10.0];
-    ll1.lineBottomSpaceColor = [UIColor blueColor];
     
     ChartLimitLine *ll2 = [[ChartLimitLine alloc] initWithLimit:-30.0 label:@"Lower Limit"];
     ll2.lineWidth = 4.0;
     ll2.lineDashLengths = @[@5.f, @5.f];
     ll2.labelPosition = ChartLimitLabelPositionRightBottom;
     ll2.valueFont = [UIFont systemFontOfSize:10.0];
-    ll2.lineBottomSpaceColor = [UIColor greenColor];
     
     ChartYAxis *leftAxis = _chartView.leftAxis;
     [leftAxis removeAllLimitLines];
