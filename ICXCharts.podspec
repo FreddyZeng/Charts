@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.tvos.deployment_target = "9.0"
   s.osx.deployment_target = "10.11"
-  s.source = { :git => "https://git.icarbonx.com/ICX-iOS/Charts.git", :branch => 'curVersion', :tag => "ICX#{s.version}" }
+  s.source = { :git => "https://git.icarbonx.com/ICX-iOS/Charts.git", :tag => "ICX#{s.version}", :branch => 'curVersion' }
   s.default_subspec = "Core"
 
   s.subspec "Core" do |ss|
