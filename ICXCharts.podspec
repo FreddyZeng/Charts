@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "ICXCharts"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
   s.summary = "Charts is a powerful & easy to use chart library for iOS, tvOS and OSX (and Android)"
   s.homepage = "https://git.icarbonx.com/ICX-iOS/ICXCharts"
   s.license = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
