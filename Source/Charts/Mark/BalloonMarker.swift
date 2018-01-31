@@ -42,11 +42,47 @@ open class BalloonMarker: MarkerImage
     
     open override func offsetForDrawing(atPoint point: CGPoint) -> CGPoint
     {
-        let size = self.size
-        var point = point
-        point.x -= size.width / 2.0
-        point.y -= size.height
-        return super.offsetForDrawing(atPoint: point)
+        var offset = self.offset
+        var size = self.size
+
+        if size.width == 0.0 && image != nil
+        {
+            size.width = image!.size.width
+        }
+        if size.height == 0.0 && image != nil
+        {
+            size.height = image!.size.height
+        }
+
+        let width = size.width
+        let height = size.height
+        let padding: CGFloat = 8.0
+
+        var origin = point
+        origin.x -= width / 2
+        origin.y -= height
+
+        if origin.x + offset.x < 0.0
+        {
+            offset.x = -origin.x + padding
+        }
+        else if let chart = chartView,
+            origin.x + width + offset.x > chart.bounds.size.width
+        {
+            offset.x = chart.bounds.size.width - origin.x - width - padding
+        }
+
+        if origin.y + offset.y < 0
+        {
+            offset.y = height + padding;
+        }
+        else if let chart = chartView,
+            origin.y + height + offset.y > chart.bounds.size.height
+        {
+            offset.y = chart.bounds.size.height - origin.y - height - padding
+        }
+
+        return offset
     }
     
     func drawLabel(context: CGContext, point: CGPoint, label: String)  {
