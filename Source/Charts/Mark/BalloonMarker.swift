@@ -14,23 +14,21 @@ import Foundation
 
 open class BalloonMarker: MarkerImage
 {
-    @objc open var color: UIColor?
+    @objc open var color: UIColor
     @objc open var arrowSize = CGSize(width: 15, height: 11)
-    @objc open var font: UIFont?
-    @objc open var textColor: UIColor?
-    @objc open var insets = UIEdgeInsets()
+    @objc open var font: UIFont
+    @objc open var textColor: UIColor
+    @objc open var insets: UIEdgeInsets
     @objc open var minimumSize = CGSize()
     
     fileprivate var attLabel: NSAttributedString?
     fileprivate var label: String?
     fileprivate var _labelSize: CGSize = CGSize()
     fileprivate var _paragraphStyle: NSMutableParagraphStyle?
-    fileprivate var _drawAttributes = [NSAttributedStringKey : Any]()
+    fileprivate var _drawAttributes = [NSAttributedStringKey : AnyObject]()
     
     @objc public init(color: UIColor, font: UIFont, textColor: UIColor, insets: UIEdgeInsets)
     {
-        super.init()
-        
         self.color = color
         self.font = font
         self.textColor = textColor
@@ -38,6 +36,7 @@ open class BalloonMarker: MarkerImage
         
         _paragraphStyle = NSParagraphStyle.default.mutableCopy() as? NSMutableParagraphStyle
         _paragraphStyle?.alignment = .center
+        super.init()
     }
     
     open override func offsetForDrawing(atPoint point: CGPoint) -> CGPoint
@@ -98,31 +97,27 @@ open class BalloonMarker: MarkerImage
         rect.origin.y -= size.height
         
         context.saveGState()
-        
         if label.count == 0 {
             context.restoreGState()
             return;
         }
         
-        if let color = color
-        {
-            context.setFillColor(color.cgColor)
-            
-            let path = UIBezierPath.init(roundedRect: CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height - arrowSize.height), cornerRadius: 5);
-            
-            let sanJiao = UIBezierPath();
-            sanJiao.move(to: CGPoint(
-                x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            sanJiao.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width / 2.0,
-                y: rect.origin.y + rect.size.height))
-            sanJiao.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            path.append(sanJiao)
-            path.fill()
-        }
+        context.setFillColor(color.cgColor)
+        
+        let path = UIBezierPath.init(roundedRect: CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height - arrowSize.height), cornerRadius: 5);
+        
+        let sanJiao = UIBezierPath();
+        sanJiao.move(to: CGPoint(
+            x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
+            y: rect.origin.y + rect.size.height - arrowSize.height))
+        sanJiao.addLine(to: CGPoint(
+            x: rect.origin.x + rect.size.width / 2.0,
+            y: rect.origin.y + rect.size.height))
+        sanJiao.addLine(to: CGPoint(
+            x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
+            y: rect.origin.y + rect.size.height - arrowSize.height))
+        path.append(sanJiao)
+        path.fill()
         
         rect.origin.y += self.insets.top
         rect.size.height -= self.insets.top + self.insets.bottom
@@ -156,25 +151,22 @@ open class BalloonMarker: MarkerImage
             return;
         }
         
-        if let color = color
-        {
-            context.setFillColor(color.cgColor)
-            
-            let path = UIBezierPath.init(roundedRect: CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height - arrowSize.height), cornerRadius: 5);
-            
-            let sanJiao = UIBezierPath();
-            sanJiao.move(to: CGPoint(
-                x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            sanJiao.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width / 2.0,
-                y: rect.origin.y + rect.size.height))
-            sanJiao.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            path.append(sanJiao)
-            path.fill()
-        }
+        context.setFillColor(color.cgColor)
+        
+        let path = UIBezierPath.init(roundedRect: CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height - arrowSize.height), cornerRadius: 5);
+        
+        let sanJiao = UIBezierPath();
+        sanJiao.move(to: CGPoint(
+            x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
+            y: rect.origin.y + rect.size.height - arrowSize.height))
+        sanJiao.addLine(to: CGPoint(
+            x: rect.origin.x + rect.size.width / 2.0,
+            y: rect.origin.y + rect.size.height))
+        sanJiao.addLine(to: CGPoint(
+            x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
+            y: rect.origin.y + rect.size.height - arrowSize.height))
+        path.append(sanJiao)
+        path.fill()
         
         rect.origin.y += self.insets.top
         rect.origin.x += self.insets.left
@@ -222,9 +214,9 @@ open class BalloonMarker: MarkerImage
         label = newLabel
         
         _drawAttributes.removeAll()
-        _drawAttributes[NSAttributedStringKey.font] = self.font
-        _drawAttributes[NSAttributedStringKey.paragraphStyle] = _paragraphStyle
-        _drawAttributes[NSAttributedStringKey.foregroundColor] = self.textColor
+        _drawAttributes[.font] = self.font
+        _drawAttributes[.paragraphStyle] = _paragraphStyle
+        _drawAttributes[.foregroundColor] = self.textColor
         
         _labelSize = label?.size(withAttributes: _drawAttributes) ?? CGSize.zero
         
