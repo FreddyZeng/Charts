@@ -36,13 +36,13 @@ open class RadarChartView: PieRadarChartViewBase
     @objc open var drawWeb = true
     
     /// modulus that determines how many labels and web-lines are skipped before the next is drawn
-    fileprivate var _skipWebLineCount = 0
+    private var _skipWebLineCount = 0
     
     /// the object reprsenting the y-axis labels
-    fileprivate var _yAxis: YAxis!
+    private var _yAxis: YAxis!
     
-    @objc internal var _yAxisRenderer: YAxisRendererRadarChart!
-    @objc internal var _xAxisRenderer: XAxisRendererRadarChart!
+    internal var _yAxisRenderer: YAxisRendererRadarChart!
+    internal var _xAxisRenderer: XAxisRendererRadarChart!
     
     public override init(frame: CGRect)
     {
@@ -81,7 +81,7 @@ open class RadarChartView: PieRadarChartViewBase
     open override func notifyDataSetChanged()
     {
         calcMinMax()
-        
+
         _yAxisRenderer?.computeAxis(min: _yAxis._axisMinimum, max: _yAxis._axisMaximum, inverted: _yAxis.isInverted)
         _xAxisRenderer?.computeAxis(min: _xAxis._axisMinimum, max: _xAxis._axisMaximum, inverted: false)
         
@@ -89,7 +89,7 @@ open class RadarChartView: PieRadarChartViewBase
             let legend = _legend,
             !legend.isLegendCustom
         {
-            _legendRenderer?.computeLegend(data: data)
+            legendRenderer?.computeLegend(data: data)
         }
         
         calculateOffsets()
@@ -139,7 +139,7 @@ open class RadarChartView: PieRadarChartViewBase
 
         renderer.drawValues(context: context)
 
-        _legendRenderer.renderLegend(context: context)
+        legendRenderer.renderLegend(context: context)
 
         drawDescription(context: context)
 
@@ -163,7 +163,7 @@ open class RadarChartView: PieRadarChartViewBase
     open override func indexForAngle(_ angle: CGFloat) -> Int
     {
         // take the current angle of the chart into consideration
-        let a = ChartUtils.normalizedAngleFromAngle(angle - self.rotationAngle)
+        let a = (angle - self.rotationAngle).normalizedAngle
         
         let sliceAngle = self.sliceAngle
         

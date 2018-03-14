@@ -24,7 +24,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
         case horizontalBezier
     }
     
-    fileprivate func initialize()
+    private func initialize()
     {
         // default color
         circleColors.append(NSUIColor(red: 140.0/255.0, green: 234.0/255.0, blue: 255.0/255.0, alpha: 1.0))
@@ -55,8 +55,8 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     @objc open var highlightHollowFillColor: NSUIColor = NSUIColor.clear
     /// 是否显示点到底部的下半部分虚线(最底部有一小段实线)，开启后 drawVerticalHighlightIndicatorEnabled 失效
     @objc open var drawVerticalBottomHalfHighlightIndicatorEnabled = false
-    
-    fileprivate var _cubicIntensity = CGFloat(0.2)
+
+    private var _cubicIntensity = CGFloat(0.2)
     
     /// Intensity for cubic lines (min = 0.05, max = 1)
     ///
@@ -80,39 +80,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
             }
         }
     }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var drawCubicEnabled: Bool
-    {
-        get
-        {
-            return mode == .cubicBezier
-        }
-        set
-        {
-            mode = newValue ? LineChartDataSet.Mode.cubicBezier : LineChartDataSet.Mode.linear
-        }
-    }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var isDrawCubicEnabled: Bool { return drawCubicEnabled }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var drawSteppedEnabled: Bool
-    {
-        get
-        {
-            return mode == .stepped
-        }
-        set
-        {
-            mode = newValue ? LineChartDataSet.Mode.stepped : LineChartDataSet.Mode.linear
-        }
-    }
-    
-    @available(*, deprecated: 1.0, message: "Use `mode` instead.")
-    open var isDrawSteppedEnabled: Bool { return drawSteppedEnabled }
-    
+        
     /// The radius of the drawn circles.
     open var circleRadius = CGFloat(8.0)
     
@@ -181,7 +149,7 @@ open class LineChartDataSet: LineRadarChartDataSet, ILineChartDataSet
     open var lineCapType = CGLineCap.butt
     
     /// formatter for customizing the position of the fill-line
-    fileprivate var _fillFormatter: IFillFormatter = DefaultFillFormatter()
+    private var _fillFormatter: IFillFormatter = DefaultFillFormatter()
     
     /// Sets a custom IFillFormatter to the chart that handles the position of the filled-line for each DataSet. Set this to null to use the default logic.
     open var fillFormatter: IFillFormatter?

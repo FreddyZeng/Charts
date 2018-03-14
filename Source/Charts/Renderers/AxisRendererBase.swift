@@ -104,7 +104,7 @@ open class AxisRendererBase: Renderer
         
         // Find out how much spacing (in y value space) between axis values
         let rawInterval = range / Double(labelCount)
-        var interval = ChartUtils.roundToNextSignificant(number: Double(rawInterval))
+        var interval = rawInterval.roundedToNextSignficant()
         
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
@@ -114,12 +114,13 @@ open class AxisRendererBase: Renderer
         }
         
         // Normalize interval
-        let intervalMagnitude = ChartUtils.roundToNextSignificant(number: pow(10.0, Double(Int(log10(interval)))))
+        let intervalMagnitude = pow(10.0, Double(Int(log10(interval)))).roundedToNextSignficant()
         let intervalSigDigit = Int(interval / intervalMagnitude)
         if intervalSigDigit > 5
         {
             // Use one order of magnitude higher, to avoid intervals like 0.9 or 90
-            interval = floor(10.0 * Double(intervalMagnitude))
+            // if it's 0.0 after floor(), we use the old value
+            interval = floor(10.0 * intervalMagnitude) == 0.0 ? interval : floor(10.0 * intervalMagnitude)
         }
         
         var n = axis.centerAxisLabelsEnabled ? 1 : 0
@@ -154,7 +155,7 @@ open class AxisRendererBase: Renderer
                 first -= interval
             }
             
-            let last = interval == 0.0 ? 0.0 : ChartUtils.nextUp(floor(yMax / interval) * interval)
+            let last = interval == 0.0 ? 0.0 : (floor(yMax / interval) * interval).nextUp
             
             if interval != 0.0 && last != first
             {
@@ -163,7 +164,11 @@ open class AxisRendererBase: Renderer
                     n += 1
                 }
             }
-            
+            else if last == first && n == 0
+            {
+                n = 1
+            }
+
             // Ensure stops contains at least n elements.
             axis.entries.removeAll(keepingCapacity: true)
             axis.entries.reserveCapacity(labelCount)
