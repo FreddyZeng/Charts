@@ -36,7 +36,10 @@ open class ChartLimitLine: ComponentBase
     @objc open var lineDashLengths: [CGFloat]?
     /// 线下面的颜色
     @objc public var lineBottomSpaceColor = NSUIColor.init(red: 68/255.0, green: 229/255.0, blue: 255/255.0, alpha: 1.0)
-    
+    /// 是否把Label渲染在内容区域外，默认false
+    @objc public var isAllowDrawLabelOutContentRect = false
+    /// 是否把label的中心对齐极限线
+    @objc public var isLabelOffsetCenter = true;
     @objc open var valueTextColor = NSUIColor.black
     @objc open var valueFont = NSUIFont.systemFont(ofSize: 13.0)
     
