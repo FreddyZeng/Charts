@@ -15,13 +15,13 @@
 import Foundation
 
 
-@objc protocol TYMarkerViewDelegate {
+@objc public protocol TYMarkerViewDelegate {
     @objc func tyMarkerViewRefreshContentAttString(mark:TYMarkerView, entry: ChartDataEntry, highlight: Highlight) -> NSAttributedString
 }
 
 open class TYMarkerView: BalloonMarker
 {
-    @objc weak var delegate: TYMarkerViewDelegate?
+    @objc public weak var delegate: TYMarkerViewDelegate?
     
     fileprivate var yFormatter = NumberFormatter()
     
